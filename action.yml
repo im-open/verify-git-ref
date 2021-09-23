@@ -1,22 +1,50 @@
-name: 'Composite Run Steps Action Template'
+name: 'verify-git-ref'
 
-description: 'Add description here'
+description: 'An action that verifies a provided branch, tag or SHA exists in the repository'
 
 inputs:
-  input-1:
-    description: 'Add a description here'
+  branch-tag-sha:
+    description: 'The branch, tag or sha that should be checked'
     required: true
+  throw-errors:
+    description: 'Flag indicating whether the action should throw an error if the ref does not exist.  Defaults to true.  Accepted values: true|false'
+    required: true
+    default: 'true'
 
 outputs:
-  output-1:
-    description: 'Add description here'
-    value: '${{ steps.step_1.outputs.world }}'
+  REF_EXISTS:
+    description: 'Flag indicating whether the provided reference exists.  true|false'
+    value: '${{ env.REF_EXISTS }}'
 
 runs:
   using: 'composite'
   steps:
-    - name: Step 1
-      id: step_1
-      shell: bash
+    - shell: bash
       run: |
-        echo "::set-output name=hello::world"
+        echo "checking ref ${{ inputs.branch-tag-sha }}..."
+        ref="${{ inputs.branch-tag-sha }}"
+        refWithPrefix="refs/heads${{ inputs.branch-tag-sha }}"
+
+        if [ $(git tag -l "$ref") ]; then
+          echo "The ref '${ref}' exists as a tag"
+          echo "REF_EXISTS=true" >> $GITHUB_ENV
+
+        elif [ "$(git show-ref -s "$ref")" ]; then
+          echo "The ref '${ref}' exists as a branch (no prefix was added to the input)"
+          echo "REF_EXISTS=true" >> $GITHUB_ENV
+
+        elif [ "$(git show-ref -s "$refWithPrefix")" ]; then
+          echo "The ref '${refWithPrefix}' exists as a branch (the refs/heads/ prefix was added to the input)"
+          echo "REF_EXISTS=true" >> $GITHUB_ENV
+
+        elif git cat-file -e $ref^{commit}; then
+          echo "The ref '${ref}' exists as a SHA"
+          echo "REF_EXISTS=true" >> $GITHUB_ENV
+          
+        else
+          echo "The ref does not appear to exist"
+          echo "REF_EXISTS=false" >> $GITHUB_ENV
+          if [ '${{ inputs.throw-errors }}' == 'true' ]; then
+            exit 1;
+          fi
+        fi
