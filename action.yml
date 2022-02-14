@@ -57,5 +57,5 @@ runs:
           fi
         fi
         
-        echo "##[set-output name=REF_EXISTS;]${REF_EXISTS}"
-        echo "##[set-output name=REF_TYPE;]${REF_TYPE}"
+        echo "::set-output name=REF_EXISTS::$REF_EXISTS"
+        echo "::set-output name=REF_TYPE::$REF_TYPE"
