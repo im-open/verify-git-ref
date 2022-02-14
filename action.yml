@@ -28,6 +28,9 @@ runs:
         echo "checking ref ${{ inputs.branch-tag-sha }}..."
         ref="${{ inputs.branch-tag-sha }}"
         refWithPrefix="refs/heads${{ inputs.branch-tag-sha }}"
+        
+        echo "::set-output name=REF_EXISTS::false"
+        echo "::set-output name=REF_TYPE::unknown"
 
         if [ $(git tag -l "$ref") ]; then
           echo "The ref '${ref}' exists as a tag"
