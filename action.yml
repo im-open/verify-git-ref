@@ -14,10 +14,10 @@ inputs:
 outputs:
   REF_EXISTS:
     description: 'Flag indicating whether the provided reference exists.  true|false'
-    value: '${{ env.REF_EXISTS }}'
+    #value: '${{ env.REF_EXISTS }}'
   REF_TYPE:
     description: 'Indicating what type of privided reference: tag|branch|sha'
-    value: '${{ env.REF_TYPE }}'
+    #value: '${{ env.REF_TYPE }}'
 
 runs:
   using: 'composite'
@@ -55,3 +55,6 @@ runs:
             exit 1;
           fi
         fi
+        
+        echo "##[set-output name=REF_EXISTS;]${REF_EXISTS}"
+        echo "##[set-output name=REF_TYPE;]${REF_TYPE}"
