@@ -26,6 +26,7 @@ This action requires that the `actions/checkout` action has run and a `fetch-dep
 | Output       | Description                                                            |
 | ------------ | ---------------------------------------------------------------------- |
 | `REF_EXISTS` | Flag indicating whether the provided reference exists:  `true\| false` |
+| `TYPE`       | Indicating what type of privided reference: `tag|branch|sha`           |
 
 ## Example
 
@@ -47,7 +48,7 @@ jobs:
           fetch-depth: 0
 
       - name: verify version exists before deploying
-        uses: im-open/verify-git-ref@v1.0.1
+        uses: im-open/verify-git-ref@v1.1.0
         with:
           branch-tag-sha: ${{ github.event.inputs.branch-tag-sha }}
 
