@@ -17,7 +17,7 @@ outputs:
     value: '${{ env.REF_EXISTS }}'
   REF_TYPE:
     description: 'Indicating what type of privided reference: tag|branch|sha'
-    value: '${{ env.REFREF_TYPE_EXISTS }}'
+    value: '${{ env.REF_TYPE }}'
 
 runs:
   using: 'composite'
