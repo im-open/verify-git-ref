@@ -28,22 +28,22 @@ runs:
         if [ $(git tag -l "$ref") ]; then
           echo "The ref '${ref}' exists as a tag"
           echo "REF_EXISTS=true" >> $GITHUB_ENV
-          echo "IS_TAG=true" >> $GITHUB_ENV
+          echo "REF_TYPE=tag" >> $GITHUB_ENV
 
         elif [ "$(git show-ref -s "$ref")" ]; then
           echo "The ref '${ref}' exists as a branch (no prefix was added to the input)"
           echo "REF_EXISTS=true" >> $GITHUB_ENV
-          echo "IS_BRANCH=true" >> $GITHUB_ENV
+          echo "REF_TYPE=branch" >> $GITHUB_ENV
 
         elif [ "$(git show-ref -s "$refWithPrefix")" ]; then
           echo "The ref '${refWithPrefix}' exists as a branch (the refs/heads/ prefix was added to the input)"
           echo "REF_EXISTS=true" >> $GITHUB_ENV
-          echo "IS_BRANCH=true" >> $GITHUB_ENV
+          echo "REF_TYPE=branch" >> $GITHUB_ENV
 
         elif git cat-file -e $ref^{commit}; then
           echo "The ref '${ref}' exists as a SHA"
           echo "REF_EXISTS=true" >> $GITHUB_ENV
-          echo "IS_SHA=true" >> $GITHUB_ENV
+          echo "REF_TYPE=sha" >> $GITHUB_ENV
           
         else
           echo "The ref does not appear to exist"
