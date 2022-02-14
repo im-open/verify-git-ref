@@ -17,7 +17,7 @@ outputs:
     value: ${{ steps.determine-ref.outputs.REF_EXISTS }}
   REF_TYPE:
     description: 'Indicating what type of privided reference: tag|branch|sha'
-    value: ${{ toJSON(steps.determine-ref) }}
+    value: ${{ steps.determine-ref.outputs.REF_TYPE }}
 
 runs:
   using: 'composite'
