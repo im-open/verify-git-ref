@@ -26,7 +26,7 @@ This action requires that the `actions/checkout` action has run and a `fetch-dep
 | Output       | Description                                                            |
 | ------------ | ---------------------------------------------------------------------- |
 | `REF_EXISTS` | Flag indicating whether the provided reference exists:  `true\|false`  |
-| `REF_TYPE`   | Indicating what type of privided reference: `tag\|branch\|sha`         |
+| `REF_TYPE`   | String indicating the type of the provided reference: `tag\|branch\|sha\|unknown`       |
 
 ## Example
 
