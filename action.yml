@@ -16,7 +16,7 @@ outputs:
     description: 'Flag indicating whether the provided reference exists.  true|false'
     value: ${{ steps.determine-ref.outputs.REF_EXISTS }}
   REF_TYPE:
-    description: 'Indicating what type of privided reference: tag|branch|sha'
+    description: 'String indicating the type of the provided reference: tag|branch|sha|unknown'
     value: ${{ steps.determine-ref.outputs.REF_TYPE }}
 
 runs:
