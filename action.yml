@@ -14,36 +14,46 @@ inputs:
 outputs:
   REF_EXISTS:
     description: 'Flag indicating whether the provided reference exists.  true|false'
-    value: '${{ env.REF_EXISTS }}'
+    value: ${{ steps.determine-ref.outputs.REF_EXISTS }}
+  REF_TYPE:
+    description: 'String indicating the type of the provided reference: tag|branch|sha|unknown'
+    value: ${{ steps.determine-ref.outputs.REF_TYPE }}
 
 runs:
   using: 'composite'
   steps:
-    - shell: bash
+    - id: determine-ref
+      shell: bash
       run: |
         echo "checking ref ${{ inputs.branch-tag-sha }}..."
         ref="${{ inputs.branch-tag-sha }}"
         refWithPrefix="refs/heads${{ inputs.branch-tag-sha }}"
+        
+        echo "::set-output name=REF_EXISTS::false"
+        echo "::set-output name=REF_TYPE::unknown"
 
         if [ $(git tag -l "$ref") ]; then
           echo "The ref '${ref}' exists as a tag"
-          echo "REF_EXISTS=true" >> $GITHUB_ENV
+          echo "::set-output name=REF_EXISTS::true"
+          echo "::set-output name=REF_TYPE::tag"
 
         elif [ "$(git show-ref -s "$ref")" ]; then
           echo "The ref '${ref}' exists as a branch (no prefix was added to the input)"
-          echo "REF_EXISTS=true" >> $GITHUB_ENV
+          echo "::set-output name=REF_EXISTS::true"
+          echo "::set-output name=REF_TYPE::branch"
 
         elif [ "$(git show-ref -s "$refWithPrefix")" ]; then
           echo "The ref '${refWithPrefix}' exists as a branch (the refs/heads/ prefix was added to the input)"
-          echo "REF_EXISTS=true" >> $GITHUB_ENV
+          echo "::set-output name=REF_EXISTS::true"
+          echo "::set-output name=REF_TYPE::branch"
 
         elif git cat-file -e $ref^{commit}; then
           echo "The ref '${ref}' exists as a SHA"
-          echo "REF_EXISTS=true" >> $GITHUB_ENV
+          echo "::set-output name=REF_EXISTS::true"
+          echo "::set-output name=REF_TYPE::sha"
           
         else
           echo "The ref does not appear to exist"
-          echo "REF_EXISTS=false" >> $GITHUB_ENV
           if [ '${{ inputs.throw-errors }}' == 'true' ]; then
             exit 1;
           fi
