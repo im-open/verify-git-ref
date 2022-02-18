@@ -12,6 +12,9 @@ inputs:
     default: 'true'
 
 outputs:
+  REF_WITHOUT_PREFIX:
+    description: 'References without a prefix if present'
+    value: ${{ steps.remove-ref-prefix.outputs.result }}
   REF_EXISTS:
     description: 'Flag indicating whether the provided reference exists.  true|false'
     value: ${{ steps.determine-ref.outputs.REF_EXISTS }}
@@ -22,12 +25,19 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    
+    # Removes any leading paths if present i.e. refs/tags/v2.1.0 -> v2.1.0
+    - id: remove-ref-prefix
+      env: 
+        GITHUB_REF: ${{ inputs.branch-tag-sha }}
+      run: echo "##[set-output name=result;]${GITHUB_REF##*/}"
+      
     - id: determine-ref
       shell: bash
       run: |
         echo "checking ref ${{ inputs.branch-tag-sha }}..."
         ref="${{ inputs.branch-tag-sha }}"
-        refWithPrefix="refs/heads${{ inputs.branch-tag-sha }}"
+        refWithPrefix="refs/heads${{ steps.remove-ref-prefix.outputs.result }}"
         
         echo "::set-output name=REF_EXISTS::false"
         echo "::set-output name=REF_TYPE::unknown"
