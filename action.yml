@@ -13,7 +13,7 @@ inputs:
 
 outputs:
   REF_WITHOUT_PREFIX:
-    description: 'References without a prefix if present'
+    description: 'Reference without a prefix if present'
     value: ${{ steps.determine-ref.outputs.REF_WITHOUT_PREFIX }}
   REF_EXISTS:
     description: 'Flag indicating whether the provided reference exists.  true|false'
