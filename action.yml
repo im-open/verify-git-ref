@@ -30,7 +30,8 @@ runs:
     - id: remove-ref-prefix
       env: 
         GITHUB_REF: ${{ inputs.branch-tag-sha }}
-      run: echo "##[set-output name=result;]${GITHUB_REF##*/}"
+      run: echo "::set-output name=result::${GITHUB_REF##*/}"  
+      #run: echo "##[set-output name=result;]${GITHUB_REF##*/}"
       
     - id: determine-ref
       shell: bash
