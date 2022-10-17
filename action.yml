@@ -29,28 +29,28 @@ runs:
         ref="${{ inputs.branch-tag-sha }}"
         refWithPrefix="refs/heads${{ inputs.branch-tag-sha }}"
         
-        echo "::set-output name=REF_EXISTS::false"
-        echo "::set-output name=REF_TYPE::unknown"
+        echo "REF_EXISTS=false" >> $GITHUB_OUTPUT
+        echo "REF_TYPE=unknown" >> $GITHUB_OUTPUT
 
         if [ $(git tag -l "$ref") ]; then
           echo "The ref '${ref}' exists as a tag"
-          echo "::set-output name=REF_EXISTS::true"
-          echo "::set-output name=REF_TYPE::tag"
+          echo "REF_EXISTS=true" >> $GITHUB_OUTPUT
+          echo "REF_TYPE=tag" >> $GITHUB_OUTPUT
 
         elif [ "$(git show-ref -s "$ref")" ]; then
           echo "The ref '${ref}' exists as a branch (no prefix was added to the input)"
-          echo "::set-output name=REF_EXISTS::true"
-          echo "::set-output name=REF_TYPE::branch"
+          echo "REF_EXISTS=true" >> $GITHUB_OUTPUT
+          echo "REF_TYPE=branch" >> $GITHUB_OUTPUT
 
         elif [ "$(git show-ref -s "$refWithPrefix")" ]; then
           echo "The ref '${refWithPrefix}' exists as a branch (the refs/heads/ prefix was added to the input)"
-          echo "::set-output name=REF_EXISTS::true"
-          echo "::set-output name=REF_TYPE::branch"
+          echo "REF_EXISTS=true" >> $GITHUB_OUTPUT
+          echo "REF_TYPE=branch" >> $GITHUB_OUTPUT
 
         elif git cat-file -e $ref^{commit}; then
           echo "The ref '${ref}' exists as a SHA"
-          echo "::set-output name=REF_EXISTS::true"
-          echo "::set-output name=REF_TYPE::sha"
+          echo "REF_EXISTS=true" >> $GITHUB_OUTPUT
+          echo "REF_TYPE=sha" >> $GITHUB_OUTPUT
           
         else
           echo "The ref does not appear to exist"
