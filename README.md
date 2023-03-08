@@ -50,7 +50,7 @@ jobs:
           fetch-depth: 0
 
       - name: verify version exists before deploying
-        uses: im-open/verify-git-ref@v1.2.0
+        uses: im-open/verify-git-ref@v1.2.1
         with:
           branch-tag-sha: ${{ github.event.inputs.branch-tag-sha }}
 
