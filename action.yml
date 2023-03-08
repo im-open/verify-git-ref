@@ -1,6 +1,6 @@
-name: 'verify-git-ref'
+name: verify-git-ref
 
-description: 'An action that verifies a provided branch, tag or SHA exists in the repository'
+description: An action that verifies a provided branch, tag or SHA exists in the repository
 
 inputs:
   branch-tag-sha:
