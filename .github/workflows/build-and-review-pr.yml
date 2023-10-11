@@ -65,8 +65,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # NOTE:  These three releases have been created in this action's repository to test with.
-      #        If they are removed or updated, these tests will fail.
       EXISTING_BRANCH: 'main'
       EXISTING_TAG: 'v1.2.1'
       EXISTING_SHA: 'd1646b13d2370437f7ca85233d340cb2e15b74c7'
