@@ -13,6 +13,7 @@ This action can be used to verify whether a git ref (branch/tag/sha) exists in a
     - [Incrementing the Version](#incrementing-the-version)
     - [Source Code Changes](#source-code-changes)
     - [Updating the README.md](#updating-the-readmemd)
+    - [Tests](#tests)
   - [Code of Conduct](#code-of-conduct)
   - [License](#license)
 
@@ -69,6 +70,7 @@ When creating PRs, please review the following guidelines:
 - [ ] The action code does not contain sensitive information.
 - [ ] At least one of the commit messages contains the appropriate `+semver:` keywords listed under [Incrementing the Version] for major and minor increments.
 - [ ] The README.md has been updated with the latest version of the action.  See [Updating the README.md] for details.
+- [ ] Any tests in the [build-and-review-pr] workflow are passing
 
 ### Incrementing the Version
 
@@ -93,6 +95,10 @@ If a PR consists solely of non-source code changes like changes to the `README.m
 ### Updating the README.md
 
 If changes are made to the action's [source code], the [usage examples] section of this file should be updated with the next version of the action.  Each instance of this action should be updated.  This helps users know what the latest tag is without having to navigate to the Tags page of the repository.  See [Incrementing the Version] for details on how to determine what the next version will be or consult the first workflow run for the PR which will also calculate the next version.
+
+### Tests
+
+The build and review PR workflow includes tests which are linked to a status check. That status check needs to succeed before a PR is merged to the default branch.  The tests do not need special permissions, so they should succeed whether they come from a branch or a fork.
 
 ## Code of Conduct
 

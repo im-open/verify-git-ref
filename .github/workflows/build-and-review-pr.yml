@@ -60,3 +60,152 @@ jobs:
       # The npm script to run to build the action.  This is typically 'npm run build' if the
       # action needs to be compiled.  For composite-run-steps actions this is typically empty.
       build-command: ''
+
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      EXISTING_BRANCH: 'main'
+      EXISTING_TAG: 'v1.2.1'
+      EXISTING_SHA: 'd1646b13d2370437f7ca85233d340cb2e15b74c7'
+      NONEXISTENT_REF: 'v304.973.444'
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      #--------------------------------------
+      # EXISTING BRANCH REF
+      #--------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+      
+      - name: When validating an existing branch (${{ env.EXISTING_BRANCH}})
+        uses: ./
+        if: always()
+        id: existing-branch
+        with:
+          branch-tag-sha: ${{ env.EXISTING_BRANCH }}
+          throw-errors: true
+
+      - name: Then the outcome should be success
+        if: always()
+        run: ./test/assert-values-match.sh --name "step outcome" --expected "success" --actual "${{ steps.existing-branch.outcome }}"
+
+      - name: And the REF_EXISTS output should be true
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_EXISTS" --expected "true" --actual "${{ steps.existing-branch.outputs.REF_EXISTS }}"
+      
+      - name: And the REF_TYPE output should be branch
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_TYPE" --expected "branch" --actual "${{ steps.existing-branch.outputs.REF_TYPE }}"
+
+
+      #--------------------------------------
+      # EXISTING TAG REF
+      #--------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+      
+      - name: When validating an existing tag (${{ env.EXISTING_TAG}})
+        uses: ./
+        if: always()
+        id: existing-tag
+        with:
+          branch-tag-sha: ${{ env.EXISTING_TAG }}
+          throw-errors: true
+
+      - name: Then the outcome should be success
+        if: always()
+        run: ./test/assert-values-match.sh --name "step outcome" --expected "success" --actual "${{ steps.existing-tag.outcome }}"
+
+      - name: And the REF_EXISTS output should be true
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_EXISTS" --expected "true" --actual "${{ steps.existing-tag.outputs.REF_EXISTS }}"
+      
+      - name: And the REF_TYPE output should be tag
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_TYPE" --expected "tag" --actual "${{ steps.existing-tag.outputs.REF_TYPE }}"
+
+      #--------------------------------------
+      # EXISTING SHA REF
+      #--------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+      
+      - name: When validating an existing sha (${{ env.EXISTING_SHA}})
+        uses: ./
+        if: always()
+        id: existing-sha
+        with:
+          branch-tag-sha: ${{ env.EXISTING_SHA }}
+          throw-errors: true
+
+      - name: Then the outcome should be success
+        if: always()
+        run: ./test/assert-values-match.sh --name "step outcome" --expected "success" --actual "${{ steps.existing-sha.outcome }}"
+
+      - name: And the REF_EXISTS output should be true
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_EXISTS" --expected "true" --actual "${{ steps.existing-sha.outputs.REF_EXISTS }}"
+      
+      - name: And the REF_TYPE output should be sha
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_TYPE" --expected "sha" --actual "${{ steps.existing-sha.outputs.REF_TYPE }}"
+
+      #-------------------------------------------------
+      # REF DOES NOT EXIST WITH THROW-ERROR SET TO FALSE
+      #-------------------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+      
+      - name: When validating an non-existent ref (${{ env.NONEXISTENT_REF}}) and throw-errors is false
+        uses: ./
+        if: always()
+        id: nonexistent-ref-no-errors
+        with:
+          branch-tag-sha: ${{ env.NONEXISTENT_REF }}
+          throw-errors: false
+
+      - name: Then the outcome should be success
+        if: always()
+        run: ./test/assert-values-match.sh --name "step outcome" --expected "success" --actual "${{ steps.nonexistent-ref-no-errors.outcome }}"
+
+      - name: And the REF_EXISTS output should be false
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_EXISTS" --expected "false" --actual "${{ steps.nonexistent-ref-no-errors.outputs.REF_EXISTS }}"
+      
+      - name: And the REF_TYPE output should be unknown
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_TYPE" --expected "unknown" --actual "${{ steps.nonexistent-ref-no-errors.outputs.REF_TYPE }}"
+
+      #-------------------------------------------------
+      # REF DOES NOT EXIST WITH THROW-ERROR SET TO TRUE
+      #-------------------------------------------------
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
+      
+      - name: When validating an non-existent ref (${{ env.NONEXISTENT_REF}}) and throw-errors is true
+        uses: ./
+        if: always()
+        continue-on-error: true # This is needed because we expect the step to fail.  It needs to "pass" in order for the test job to succeed.
+        id: nonexistent-ref-with-errors
+        with:
+          branch-tag-sha: ${{ env.NONEXISTENT_REF }}
+          throw-errors: true
+
+      - name: Then the outcome should be failure
+        if: always()
+        run: ./test/assert-values-match.sh --name "step outcome" --expected "failure" --actual "${{ steps.nonexistent-ref-with-errors.outcome }}"
+
+      - name: And the REF_EXISTS output should be false
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_EXISTS" --expected "false" --actual "${{ steps.nonexistent-ref-with-errors.outputs.REF_EXISTS }}"
+      
+      - name: And the REF_TYPE output should be unknown
+        if: always()
+        run: ./test/assert-values-match.sh --name "REF_TYPE" --expected "unknown" --actual "${{ steps.nonexistent-ref-with-errors.outputs.REF_TYPE }}"
+
+      - name: '-------------------------------------------------------------------------------------------------------'
+        run: echo ""
