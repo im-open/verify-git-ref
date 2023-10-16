@@ -1,3 +1,7 @@
+# Tests
+
+Force tests to run from a fork to see what happens
+
 # verify-git-ref
 
 This action can be used to verify whether a git ref (branch/tag/sha) exists in a repository. By default this action will exit with a code of 1 if the provided ref does not appear to exist. This behavior can be changed by setting the `throw-errors` flag to false.
