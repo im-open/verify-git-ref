@@ -49,13 +49,13 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: verify version exists before deploying
         # You may also reference just the major or major.minor version
-        uses: im-open/verify-git-ref@v1.2.1
+        uses: im-open/verify-git-ref@v2.0.0
         with:
           branch-tag-sha: ${{ github.event.inputs.branch-tag-sha }}
 
